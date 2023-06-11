@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:custom_calendar/logic/blocs/calendar/bloc/calendar_bloc.dart';
+import 'package:custom_calendar/screens/main_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,6 +13,7 @@ import 'package:custom_calendar/logic/blocs/bottom_navigation/bloc/bottom_naviga
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:intl/date_symbol_data_local.dart' show initializeDateFormatting;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -52,6 +55,9 @@ void main() async {
         BlocProvider(
           create: (context) => BottomNavigationBloc(),
         ),
+        BlocProvider(
+          create: (context) => CalendarBloc(),
+        ),
       ],
       child: const MainApp(),
     ),
@@ -70,9 +76,13 @@ class MainApp extends StatelessWidget {
       /// старт загрузки
       appLoadBloc.add(AppLoadStart());
 
+      await Future.delayed(const Duration(seconds: 1));
+
       /// конец загрузки
       appLoadBloc.add(AppLoadComplete());
     }
+
+    initializeDateFormatting('ru', null);
 
     /// Билдер, который обновляет приложение в рантайме по изменении настроек
     return BlocBuilder<AppSettingsBloc, AppSettingsState>(
@@ -100,8 +110,8 @@ class MainApp extends StatelessWidget {
             ),
             cupertino: (context, platform) => CupertinoAppData(
               theme: const CupertinoThemeData(
-                primaryColor: Color.fromRGBO(255, 120, 91, 1),
-                primaryContrastingColor: Colors.white,
+                primaryContrastingColor: Color.fromRGBO(255, 120, 91, 1),
+                primaryColor: Colors.white,
               ),
             ),
 
@@ -115,7 +125,7 @@ class MainApp extends StatelessWidget {
                   return const AppLoadingScreen();
                 }
                 //! здесь вывод главного экрана после загрузки
-                return const SizedBox();
+                return const MainScreen();
               },
             ),
           ),

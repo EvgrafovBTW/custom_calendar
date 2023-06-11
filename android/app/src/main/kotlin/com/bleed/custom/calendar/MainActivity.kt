@@ -1,4 +1,4 @@
-package com.example.custom_calendar
+package com.bleed.custom.calendar
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -19,6 +19,7 @@ dependencies:
   overlay_support: ^2.1.0
   path_provider: ^2.0.14
   simple_animations: ^5.0.0+3
+  table_calendar: ^3.0.9
 
 dev_dependencies:
   flutter_test:

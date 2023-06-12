@@ -1,6 +1,8 @@
 import 'package:custom_calendar/logic/blocs/calendar/bloc/calendar_bloc.dart';
 import 'package:custom_calendar/screens/components/calendar/calendar_dialog.dart';
 import 'package:custom_calendar/screens/components/calendar/date_cells.dart';
+import 'package:custom_calendar/screens/consecutive_screens/date_event_screen.dart';
+import 'package:custom_calendar/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
@@ -89,24 +91,30 @@ class DateEventCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-          child: SizedBox(
-            width: MediaQuery.of(context).size.width,
-            child: Column(
-              children: [
-                Text(
-                  event.title,
-                  style: TextStyle(
-                    fontSize: MediaQuery.of(context).size.height * 0.025,
+      child: GestureDetector(
+        onTap: () => Utils.platformNavigateTo(
+          context: context,
+          screen: DateEventScreen(event),
+        ),
+        child: Card(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width,
+              child: Column(
+                children: [
+                  Text(
+                    event.title,
+                    style: TextStyle(
+                      fontSize: MediaQuery.of(context).size.height * 0.025,
+                    ),
                   ),
-                ),
-                Divider(
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                if (event.description != null) Text(event.description!)
-              ],
+                  Divider(
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                  if (event.description != null) Text(event.description!)
+                ],
+              ),
             ),
           ),
         ),

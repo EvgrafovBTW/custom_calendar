@@ -97,14 +97,13 @@ class MainApp extends StatelessWidget {
             material: (context, platform) => MaterialAppData(
               theme: ThemeData(
                 useMaterial3: true,
-                colorScheme: const ColorScheme.light(
-                  //TODO кастомные цвета
-                  primary: Color.fromRGBO(255, 120, 91, 1),
+                colorScheme: ColorScheme.light(
+                  primary: state.primaryColor,
                   onPrimary: Colors.white,
-                  secondary: Colors.amber,
-                  onSecondary: Color.fromRGBO(158, 28, 104, 1),
-                  tertiary: Color.fromRGBO(100, 28, 158, 1),
-                  onTertiary: Color.fromRGBO(28, 158, 126, 1),
+                  secondary: state.secondary,
+                  // onSecondary: Color.fromRGBO(158, 28, 104, 1),
+                  tertiary: state.tertiary,
+                  onTertiary: state.onTertiary,
                   surface: Colors.white,
                   onSurface: Colors.black,
                 ),

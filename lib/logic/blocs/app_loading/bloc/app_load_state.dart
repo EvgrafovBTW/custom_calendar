@@ -11,4 +11,6 @@ class AppLoadInitial extends AppLoadState {}
 
 class AppLoading extends AppLoadState {}
 
+class AppOnboarding extends AppLoadState {}
+
 class AppLoaded extends AppLoadState {}

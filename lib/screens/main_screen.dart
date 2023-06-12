@@ -11,7 +11,7 @@ class MainScreen extends StatelessWidget {
 
   /// массив со страницами из боттом бара
   static List<Widget> pages = [
-    CalendarPage(),
+    const CalendarPage(),
     const FeedPage(),
     const ProfilePage(),
   ];

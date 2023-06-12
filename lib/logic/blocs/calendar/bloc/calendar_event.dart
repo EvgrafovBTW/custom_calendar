@@ -8,7 +8,7 @@ abstract class CalendarEvent extends Equatable {
 }
 
 class MarkNewDate extends CalendarEvent {
-  final DateTime date;
+  final MarkedDateEvent date;
   const MarkNewDate(this.date);
 }
 

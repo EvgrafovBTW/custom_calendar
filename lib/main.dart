@@ -1,3 +1,5 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'dart:math';
 
 import 'package:custom_calendar/logic/blocs/calendar/bloc/calendar_bloc.dart';
@@ -96,8 +98,11 @@ class MainApp extends StatelessWidget {
               theme: ThemeData(
                 useMaterial3: true,
                 colorScheme: const ColorScheme.light(
+                  //TODO кастомные цвета
                   primary: Color.fromRGBO(255, 120, 91, 1),
-                  secondary: Color.fromRGBO(116, 105, 105, 1),
+                  onPrimary: Color.fromRGBO(91, 255, 132, 1),
+                  secondary: Color.fromRGBO(143, 29, 128, 1),
+                  onSecondary: Color.fromRGBO(28, 158, 126, 1),
                   tertiary: Colors.amber,
                   surface: Colors.white,
                   onSurface: Colors.black,

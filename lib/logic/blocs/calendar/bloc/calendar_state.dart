@@ -7,13 +7,13 @@ class CalendarState extends Equatable {
     this.markedDays = const [],
   });
   final DateTime selectedDay;
-  final List<DateTime> markedDays;
+  final List<MarkedDateEvent> markedDays;
   @override
   List<dynamic> get props => [selectedDay];
 
   CalendarState copyWith({
     DateTime? selectedDay,
-    List<DateTime>? markedDays,
+    List<MarkedDateEvent>? markedDays,
   }) {
     return CalendarState(
       selectedDay: selectedDay ?? this.selectedDay,

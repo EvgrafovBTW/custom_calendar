@@ -100,10 +100,11 @@ class MainApp extends StatelessWidget {
                 colorScheme: const ColorScheme.light(
                   //TODO кастомные цвета
                   primary: Color.fromRGBO(255, 120, 91, 1),
-                  onPrimary: Color.fromRGBO(91, 255, 132, 1),
-                  secondary: Color.fromRGBO(143, 29, 128, 1),
-                  onSecondary: Color.fromRGBO(28, 158, 126, 1),
-                  tertiary: Colors.amber,
+                  onPrimary: Colors.white,
+                  secondary: Colors.amber,
+                  onSecondary: Color.fromRGBO(158, 28, 104, 1),
+                  tertiary: Color.fromRGBO(100, 28, 158, 1),
+                  onTertiary: Color.fromRGBO(28, 158, 126, 1),
                   surface: Colors.white,
                   onSurface: Colors.black,
                 ),

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
 class Decorations {
-  static Color getDateColor(DateTime date) {
+  static Color getDateColor(BuildContext context, DateTime date) {
+    ThemeData theme = Theme.of(context);
     if (date.millisecondsSinceEpoch > DateTime.now().millisecondsSinceEpoch) {
-      return Colors.red;
+      return theme.colorScheme.tertiary;
     } else {
-      return Colors.indigo;
+      return theme.colorScheme.onTertiary;
     }
   }
 }

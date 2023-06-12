@@ -1,6 +1,9 @@
 import 'package:custom_calendar/logic/blocs/calendar/bloc/calendar_bloc.dart';
+import 'package:custom_calendar/logic/models/marked_date_model.dart';
+import 'package:custom_calendar/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 class DateCell extends StatelessWidget {
   const DateCell(
@@ -18,7 +21,7 @@ class DateCell extends StatelessWidget {
 
     Color? getCellColor() {
       if (dateType == DateCellType.selected) {
-        return theme.colorScheme.tertiary;
+        return theme.colorScheme.secondary;
       }
       if (dateType == DateCellType.today) {
         return theme.colorScheme.primary;
@@ -26,11 +29,15 @@ class DateCell extends StatelessWidget {
       return null;
     }
 
-    bool isDateMarked() {
-      if (calendarBloc.state.markedDays.contains(day)) {
-        return true;
+    List<MarkedDateEvent>? isDateMarked() {
+      List<MarkedDateEvent>? events;
+      for (MarkedDateEvent event in calendarBloc.state.markedDays) {
+        if (isSameDay(event.dateTime, day)) {
+          events ??= [];
+          events.add(event);
+        }
       }
-      return false;
+      return events;
     }
 
     return Padding(
@@ -47,7 +54,7 @@ class DateCell extends StatelessWidget {
           child: DateCellBuilder(
             dateType,
             day: day,
-            marked: isDateMarked(),
+            markedDateEvents: isDateMarked(),
           ),
         ),
       ),
@@ -59,40 +66,23 @@ class DateCellBuilder extends StatelessWidget {
   const DateCellBuilder(
     this.dateType, {
     required this.day,
-    required this.marked,
+    this.markedDateEvents,
     super.key,
   });
-  final bool marked;
   final DateTime day;
   final DateCellType dateType;
+  final List<MarkedDateEvent>? markedDateEvents;
   @override
   Widget build(BuildContext context) {
-    if (marked) {
-      return MarkedDateEventCellBody(day);
+    if (markedDateEvents != null) {
+      return MarkedDateEventCellBody(
+        day,
+        events: markedDateEvents!,
+      );
     }
 
     return DateCellBody(
       day: day,
-    );
-  }
-}
-
-class SelectedCellBody extends StatelessWidget {
-  const SelectedCellBody({
-    super.key,
-    required this.day,
-  });
-
-  final DateTime day;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(
-          day.day.toString(),
-        ),
-      ],
     );
   }
 }
@@ -121,30 +111,40 @@ class MarkedDateEventCellBody extends StatelessWidget {
   const MarkedDateEventCellBody(
     this.day, {
     super.key,
+    required this.events,
   });
   final DateTime day;
+  final List<MarkedDateEvent> events;
 
   @override
   Widget build(BuildContext context) {
-    ThemeData theme = Theme.of(context);
-    Color getDateColor(DateTime date) {
-      if (date.millisecondsSinceEpoch > DateTime.now().millisecondsSinceEpoch) {
-        return theme.colorScheme.secondary;
-      } else {
-        return theme.colorScheme.onSecondary;
-      }
-    }
-
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
           day.day.toString(),
         ),
-        Icon(
-          //TODO кастомную иконку
-          Icons.star,
-          color: getDateColor(day),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 2),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (events.length > 1)
+                Text(
+                  events.length.toString(),
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: Decorations.getDateColor(context, day),
+                  ),
+                ),
+              Icon(
+                //TODO кастомную иконку
+                Icons.star,
+                color: Decorations.getDateColor(context, day),
+                size: 15,
+              ),
+            ],
+          ),
         ),
       ],
     );

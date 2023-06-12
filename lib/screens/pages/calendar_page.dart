@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:custom_calendar/logic/blocs/calendar/bloc/calendar_bloc.dart';
 import 'package:custom_calendar/screens/components/calendar/calendar_dialog.dart';
 import 'package:custom_calendar/screens/components/calendar/date_cells.dart';
@@ -60,7 +58,7 @@ class DateEventsList extends StatelessWidget {
     if (events.isNotEmpty) {
       return Column(
         children: [
-          for (MarkedDateEvent event in events) Text(event.title),
+          for (MarkedDateEvent event in events) DateEventCard(event: event),
         ],
       );
     }
@@ -74,6 +72,44 @@ class DateEventsList extends StatelessWidget {
           ],
         ),
         textAlign: TextAlign.center,
+      ),
+    );
+  }
+}
+
+class DateEventCard extends StatelessWidget {
+  const DateEventCard({
+    super.key,
+    required this.event,
+  });
+
+  final MarkedDateEvent event;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15),
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+          child: SizedBox(
+            width: MediaQuery.of(context).size.width,
+            child: Column(
+              children: [
+                Text(
+                  event.title,
+                  style: TextStyle(
+                    fontSize: MediaQuery.of(context).size.height * 0.025,
+                  ),
+                ),
+                Divider(
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                if (event.description != null) Text(event.description!)
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -99,11 +135,12 @@ class CustomCalendar extends StatelessWidget {
         return isSameDay(state.selectedDay, day);
       },
       onDayLongPressed: (selectedDay, focusedDay) async {
+        calendarBloc.add(SelectDate(focusedDay));
         await showPlatformDialog(
           context: context,
           material: MaterialDialogData(),
           builder: (context) {
-            return const CalendarDialog();
+            return CalendarDialog(selectedDay);
           },
         );
       },
@@ -154,7 +191,7 @@ class CustomCalendar extends StatelessWidget {
         ),
         selectedDecoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: theme.colorScheme.tertiary,
+          color: theme.colorScheme.secondary,
         ),
       ),
       // headerStyle: HeaderStyle(),

@@ -3,10 +3,12 @@
 import 'dart:math';
 
 import 'package:custom_calendar/logic/blocs/calendar/bloc/calendar_bloc.dart';
+import 'package:custom_calendar/logic/push_notifications/local_notification_service.dart';
 import 'package:custom_calendar/screens/main_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:custom_calendar/logic/blocs/app_loading/bloc/app_load_bloc.dart';
@@ -16,9 +18,15 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:intl/date_symbol_data_local.dart' show initializeDateFormatting;
+import 'package:timezone/timezone.dart' as tz;
+import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  LocalNotificationService notificationService =
+      LocalNotificationService(FlutterLocalNotificationsPlugin());
+  await notificationService.initializeService();
+
   // Здесь устанваливается кастомный вид эксепшена на экране
   ErrorWidget.builder = (details) {
     return Material(
@@ -43,7 +51,7 @@ void main() async {
     );
   };
   HydratedBloc.storage = await HydratedStorage.build(
-    storageDirectory: await getTemporaryDirectory(),
+    storageDirectory: await getApplicationDocumentsDirectory(),
   );
   runApp(
     MultiBlocProvider(
@@ -64,6 +72,50 @@ void main() async {
       child: const MainApp(),
     ),
   );
+}
+
+class TestApp extends StatelessWidget {
+  const TestApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    LocalNotificationService notificationService =
+        LocalNotificationService.instance;
+    return MaterialApp(
+      home: Scaffold(
+        body: SafeArea(
+          child: Column(
+            children: [
+              Center(
+                child: ElevatedButton(
+                  onPressed: () async {
+                    await notificationService.showNotification(gid: 1);
+                  },
+                  child: const Text('show'),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  final String currentTimeZone =
+                      await FlutterNativeTimezone.getLocalTimezone();
+                  //TODO сделать пуш уведомление на эвент из календаря
+                  print(currentTimeZone);
+                  await notificationService.queueNotification(
+                    gid: 1,
+                    // showTime: DateTime.now().add(Duration(seconds: 10)),
+                    showTime: tz.TZDateTime.now(
+                      tz.getLocation(currentTimeZone),
+                    ).add(const Duration(seconds: 5)),
+                  );
+                },
+                child: const Text('show timed'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class MainApp extends StatelessWidget {

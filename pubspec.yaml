@@ -12,10 +12,12 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_bloc: ^8.1.3
+  flutter_local_notifications: ^14.1.1
+  flutter_native_timezone: ^2.0.0
   flutter_platform_widgets: ^3.3.1
   flutter_slidable: ^3.0.0
   flutter_spinkit: ^5.2.0
-  hydrated_bloc: ^9.1.1
+  hydrated_bloc: ^9.1.2
   overlay_support: ^2.1.0
   path_provider: ^2.0.14
   simple_animations: ^5.0.0+3
@@ -28,3 +30,5 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - icons/app_icon.png

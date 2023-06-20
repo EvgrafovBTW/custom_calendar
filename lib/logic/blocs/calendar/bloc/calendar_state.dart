@@ -6,19 +6,24 @@ class CalendarState extends Equatable {
   const CalendarState({
     required this.selectedDay,
     this.markedDays = const [],
+    this.dateCategories = const [],
   });
   final DateTime selectedDay;
   final List<MarkedDateEvent> markedDays;
+  final List<String> dateCategories;
+
   @override
-  List<dynamic> get props => [selectedDay, markedDays];
+  List<dynamic> get props => [selectedDay, markedDays, dateCategories];
 
   CalendarState copyWith({
     DateTime? selectedDay,
     List<MarkedDateEvent>? markedDays,
+    List<String>? dateCategories,
   }) {
     return CalendarState(
       selectedDay: selectedDay ?? this.selectedDay,
       markedDays: markedDays ?? this.markedDays,
+      dateCategories: dateCategories ?? this.dateCategories,
     );
   }
 
@@ -26,6 +31,7 @@ class CalendarState extends Equatable {
     return <String, dynamic>{
       'selectedDay': selectedDay.millisecondsSinceEpoch,
       'markedDays': markedDays.map((x) => x.toMap()).toList(),
+      'dateCategories': dateCategories,
     };
   }
 
@@ -38,6 +44,8 @@ class CalendarState extends Equatable {
           (x) => MarkedDateEvent.fromMap(x as Map<String, dynamic>),
         ),
       ),
+      dateCategories:
+          List<String>.from((map['dateCategories'] as List<String>)),
     );
   }
 

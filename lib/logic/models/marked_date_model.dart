@@ -7,11 +7,13 @@ class MarkedDateEvent {
     required this.dateTime,
     required this.title,
     this.description,
+    this.categoryName,
   });
   final String id;
   final DateTime dateTime;
   final String title;
   final String? description;
+  final String? categoryName;
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
@@ -19,6 +21,7 @@ class MarkedDateEvent {
       'dateTime': dateTime.millisecondsSinceEpoch,
       'title': title,
       'description': description,
+      'categoryName': categoryName,
     };
   }
 
@@ -29,6 +32,8 @@ class MarkedDateEvent {
       title: map['title'] as String,
       description:
           map['description'] != null ? map['description'] as String : null,
+      categoryName:
+          map['categoryName'] != null ? map['categoryName'] as String : null,
     );
   }
 
@@ -42,12 +47,14 @@ class MarkedDateEvent {
     DateTime? dateTime,
     String? title,
     String? description,
+    String? categoryName,
   }) {
     return MarkedDateEvent(
       id: id ?? this.id,
       dateTime: dateTime ?? this.dateTime,
       title: title ?? this.title,
       description: description ?? this.description,
+      categoryName: categoryName ?? this.categoryName,
     );
   }
 }

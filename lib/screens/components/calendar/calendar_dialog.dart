@@ -19,12 +19,15 @@ class CalendarDialog extends StatefulWidget {
 class _CalendarDialogState extends State<CalendarDialog> {
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
+  TextEditingController categoryNameController = TextEditingController();
   late CalendarBloc calendarBloc;
   List<String> hints = [];
+  ValueNotifier<String> categoryValue = ValueNotifier('');
   @override
   void dispose() {
     titleController.dispose();
     descriptionController.dispose();
+    categoryNameController.dispose();
     super.dispose();
   }
 
@@ -36,6 +39,10 @@ class _CalendarDialogState extends State<CalendarDialog> {
       if (!hints.contains(date.title)) {
         hints.add(date.title);
       }
+
+      categoryNameController.addListener(() {
+        categoryValue.value = categoryNameController.text.trim();
+      });
     }
     super.initState();
   }
@@ -61,6 +68,7 @@ class _CalendarDialogState extends State<CalendarDialog> {
                     dateTime: widget.date,
                     title: titleController.text,
                     description: descriptionController.text,
+                    categoryName: categoryNameController.text,
                   ),
                 ),
               );
@@ -77,14 +85,25 @@ class _CalendarDialogState extends State<CalendarDialog> {
         /*  child: const CalendarAutocomplete(), */
         child: SingleChildScrollView(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Text(
+                '* - Обязательное поле',
+                style: TextStyle(
+                  color: Theme.of(context)
+                      .textTheme
+                      .bodyLarge!
+                      .color!
+                      .withOpacity(0.5),
+                ),
+              ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20),
                 child: TextField(
                   controller: titleController,
                   decoration: InputDecoration(
                     contentPadding: const EdgeInsets.all(20.0),
-                    labelText: "Как назовём это событие?",
+                    labelText: "Как назовём это событие?*",
                     fillColor: Colors.transparent,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(25.0),
@@ -93,21 +112,36 @@ class _CalendarDialogState extends State<CalendarDialog> {
                   ),
                 ),
               ),
-              ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxHeight: MediaQuery.of(context).size.height / 2.7,
+              DateNameHelper(
+                hints: hints,
+                titleController: titleController,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: CategoryNameStatusIndicator(
+                  categoryValue: categoryValue,
+                  calendarBloc: calendarBloc,
                 ),
-                child: SingleChildScrollView(
-                  child: Wrap(
-                    children: [
-                      for (String title in hints)
-                        GestureDetector(
-                          onTap: () => titleController.text = title,
-                          child: DateNameHint(title),
-                        ),
-                    ],
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: TextField(
+                  controller: categoryNameController,
+                  maxLines: null,
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.all(20.0),
+                    labelText: "Определить в категорию:",
+                    fillColor: Colors.transparent,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(25.0),
+                      borderSide: const BorderSide(),
+                    ),
                   ),
                 ),
+              ),
+              CategoryNameHint(
+                calendarBloc: calendarBloc,
+                categoryNameController: categoryNameController,
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20),
@@ -133,8 +167,120 @@ class _CalendarDialogState extends State<CalendarDialog> {
   }
 }
 
-class DateNameHint extends StatelessWidget {
-  const DateNameHint(
+class CategoryNameHint extends StatelessWidget {
+  const CategoryNameHint({
+    super.key,
+    required this.calendarBloc,
+    required this.categoryNameController,
+  });
+
+  final CalendarBloc calendarBloc;
+  final TextEditingController categoryNameController;
+
+  @override
+  Widget build(BuildContext context) {
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height / 2.7,
+      ),
+      child: SingleChildScrollView(
+        child: Wrap(
+          children: [
+            for (String categoryName in calendarBloc.state.dateCategories)
+              GestureDetector(
+                onTap: () => categoryNameController.text = categoryName,
+                child: NameHint(categoryName),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class CategoryNameStatusIndicator extends StatelessWidget {
+  const CategoryNameStatusIndicator({
+    super.key,
+    required this.categoryValue,
+    required this.calendarBloc,
+  });
+
+  final ValueNotifier<String> categoryValue;
+  final CalendarBloc calendarBloc;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 5),
+      child: ValueListenableBuilder(
+        valueListenable: categoryValue,
+        builder: (context, value, child) {
+          if (categoryValue.value.isEmpty) {
+            return const SizedBox();
+          }
+          if (calendarBloc.state.dateCategories.contains(value)) {
+            return Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Выбрана существующая категория',
+                style: TextStyle(
+                  color: Colors.green,
+                  fontSize: MediaQuery.of(context).size.height * 0.015,
+                ),
+                overflow: TextOverflow.clip,
+              ),
+            );
+          }
+          return Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              'Будет добавлена новая категория',
+              style: TextStyle(
+                color: Colors.amber,
+                fontSize: MediaQuery.of(context).size.height * 0.015,
+              ),
+              overflow: TextOverflow.clip,
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class DateNameHelper extends StatelessWidget {
+  const DateNameHelper({
+    super.key,
+    required this.hints,
+    required this.titleController,
+  });
+
+  final List<String> hints;
+  final TextEditingController titleController;
+
+  @override
+  Widget build(BuildContext context) {
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height / 2.7,
+      ),
+      child: SingleChildScrollView(
+        child: Wrap(
+          children: [
+            for (String title in hints)
+              GestureDetector(
+                onTap: () => titleController.text = title,
+                child: NameHint(title),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class NameHint extends StatelessWidget {
+  const NameHint(
     this.name, {
     super.key,
   });
@@ -151,7 +297,7 @@ class DateNameHint extends StatelessWidget {
     );
   }
 }
-
+/* 
 class CalendarAutocomplete extends StatelessWidget {
   const CalendarAutocomplete({
     super.key,
@@ -229,3 +375,4 @@ class CalendarAutocomplete extends StatelessWidget {
     );
   }
 }
+ */

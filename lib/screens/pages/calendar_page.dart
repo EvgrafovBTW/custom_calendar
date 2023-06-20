@@ -65,7 +65,7 @@ class DateEventsList extends StatelessWidget {
       );
     }
     return SizedBox.fromSize(
-      size: MediaQuery.of(context).size,
+      // size: MediaQuery.of(context).size,
       child: const Text.rich(
         TextSpan(
           text: 'В этот день список событий пуст.',

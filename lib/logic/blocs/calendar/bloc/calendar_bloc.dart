@@ -14,10 +14,18 @@ class CalendarBloc extends HydratedBloc<CalendarEvent, CalendarState> {
       if (!newMarkedDateEvents.contains(event.date)) {
         newMarkedDateEvents.add(event.date);
       }
+      List<String> newCategoryNames = List.from(state.dateCategories);
+      if (!newCategoryNames.contains(event.date.categoryName)) {
+        if (event.date.categoryName != null) {
+          newCategoryNames.add(event.date.categoryName!.trim());
+        }
+      }
+
       emit(
         state.copyWith(
           selectedDay: event.date.dateTime,
           markedDays: newMarkedDateEvents,
+          dateCategories: newCategoryNames,
         ),
       );
     });

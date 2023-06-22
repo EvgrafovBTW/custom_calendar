@@ -3,6 +3,7 @@
 import 'dart:math';
 
 import 'package:custom_calendar/logic/blocs/calendar/bloc/calendar_bloc.dart';
+import 'package:custom_calendar/logic/blocs/feed_bloc/bloc/feed_bloc.dart';
 import 'package:custom_calendar/logic/push_notifications/local_notification_service.dart';
 import 'package:custom_calendar/screens/main_screen.dart';
 import 'package:flutter/cupertino.dart';
@@ -68,6 +69,9 @@ void main() async {
         BlocProvider(
           create: (context) => CalendarBloc(),
         ),
+        BlocProvider(
+          create: (context) => FeedBloc(),
+        ),
       ],
       child: const MainApp(),
     ),
@@ -99,7 +103,7 @@ class TestApp extends StatelessWidget {
                   final String currentTimeZone =
                       await FlutterNativeTimezone.getLocalTimezone();
                   //TODO сделать пуш уведомление на эвент из календаря
-                  print(currentTimeZone);
+                  // print(currentTimeZone);
                   await notificationService.queueNotification(
                     gid: 1,
                     // showTime: DateTime.now().add(Duration(seconds: 10)),

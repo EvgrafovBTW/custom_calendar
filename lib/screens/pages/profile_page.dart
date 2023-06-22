@@ -108,42 +108,6 @@ class ProfilePage extends StatelessWidget {
                           onTap: () {
                             showPlatformModalSheet(
                               context: context,
-                              builder: (context) => TeritaryColorChangeSheet(
-                                  appSettingsBloc: appSettingsBloc),
-                            );
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Flexible(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(right: 10),
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        'Третичный цвет',
-                                        style: settingLabelStyle,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              SettingsColorPane(
-                                side: sHeight * 0.05,
-                                color:
-                                    // state.isDarkMode
-                                    //     ? state.secondaryDark
-                                    //     :
-                                    state.tertiary,
-                                isDarkMode: state.isDarkMode,
-                              )
-                            ],
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            showPlatformModalSheet(
-                              context: context,
                               builder: (context) => OnTeritaryColorChangeSheet(
                                   appSettingsBloc: appSettingsBloc),
                             );
@@ -157,7 +121,7 @@ class ProfilePage extends StatelessWidget {
                                   child: Column(
                                     children: [
                                       Text(
-                                        'Цвет поверх третичного',
+                                        'Цвет события 1',
                                         style: settingLabelStyle,
                                       ),
                                     ],
@@ -171,6 +135,42 @@ class ProfilePage extends StatelessWidget {
                                     //     ? state.secondaryDark
                                     //     :
                                     state.onTertiary,
+                                isDarkMode: state.isDarkMode,
+                              )
+                            ],
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            showPlatformModalSheet(
+                              context: context,
+                              builder: (context) => TeritaryColorChangeSheet(
+                                  appSettingsBloc: appSettingsBloc),
+                            );
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Flexible(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(right: 10),
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        'Цвет события 2',
+                                        style: settingLabelStyle,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              SettingsColorPane(
+                                side: sHeight * 0.05,
+                                color:
+                                    // state.isDarkMode
+                                    //     ? state.secondaryDark
+                                    //     :
+                                    state.tertiary,
                                 isDarkMode: state.isDarkMode,
                               )
                             ],
